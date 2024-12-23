@@ -1,13 +1,15 @@
 import ProductsContainer from "@/components/products/ProductsContainer";
 
-// searchPrams dava pristup k url za názvem routeru (/products?xxxxxx)
+// searchParams přistupuje přímo k URL parametrům
+// Pokud je `searchParams` Promise, musíme jej awaitovat
 async function ProductsPage({
   searchParams,
 }: {
-  searchParams: { layout?: string; search?: string };
+  searchParams: Promise<{ layout?: string; search?: string }>;
 }) {
-  const layout = searchParams?.layout || "grid";
-  const search = searchParams?.search || "";
+  const resolvedParams = await searchParams; // Rozbalení Promise
+  const layout = resolvedParams?.layout || "grid";
+  const search = resolvedParams?.search || "";
   return (
     <>
       <ProductsContainer layout={layout} search={search} />
