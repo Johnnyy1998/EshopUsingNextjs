@@ -1,0 +1,34 @@
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+
+type formInputData = {
+  name: string;
+  type: string;
+  label?: string;
+  defaultValue?: string;
+  placeholder?: string;
+};
+
+function FormInput({
+  name,
+  type,
+  label,
+  defaultValue,
+  placeholder,
+}: formInputData) {
+  return (
+    <div className="mb-2">
+      <Label htmlFor={name}>{label || name}</Label>
+      <Input
+        id={name}
+        name={name}
+        type={type}
+        defaultValue={defaultValue}
+        required
+        placeholder={placeholder}
+      />
+    </div>
+  );
+}
+
+export default FormInput;
