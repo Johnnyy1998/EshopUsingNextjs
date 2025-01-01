@@ -1,4 +1,4 @@
-/* "use client";
+"use client";
 
 import { usePathname } from "next/navigation";
 import FormContainer from "../form/FormContainer";
@@ -26,11 +26,4 @@ function FavoriteToggleForm({
     </FormContainer>
   );
 }
-export default FavoriteToggleForm; */
-import React from "react";
-
-function FavoriteToggleForm() {
-  return <div>FavoriteToggleForm</div>;
-}
-
 export default FavoriteToggleForm;

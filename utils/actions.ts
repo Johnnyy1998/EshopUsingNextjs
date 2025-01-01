@@ -1,3 +1,4 @@
+"use server";
 import db from "@/utils/db";
 import { redirect } from "next/navigation";
 import { auth, currentUser } from "@clerk/nextjs/server";
@@ -14,7 +15,7 @@ export const fetchFeaturedProducts = async () => {
   return products;
 };
 
-export const fetchAllProducts = ({ search = "" }: { search: string }) => {
+export const fetchAllProducts = async ({ search = "" }: { search: string }) => {
   return db.product.findMany({
     where: {
       OR: [
@@ -53,7 +54,6 @@ import { revalidatePath } from "next/cache";
 import { useUser } from "@clerk/nextjs";
 
 export const deleteProductAction = async (prevState: { productId: string }) => {
-  "use server";
   const { productId } = prevState;
 
   try {
@@ -87,7 +87,6 @@ export const updateProductAction = async (
   prevState: any,
   formData: FormData
 ) => {
-  "use server";
   try {
     const productId = formData.get("id") as string;
     const rawData = Object.fromEntries(formData);
@@ -112,7 +111,6 @@ export const updateProductImageAction = async (
   prevState: any,
   formData: FormData
 ) => {
-  "use server";
   try {
     const image = formData.get("image") as File;
     const productId = formData.get("id") as string;
@@ -136,16 +134,15 @@ export const updateProductImageAction = async (
   }
 };
 
-/* export const fetchFavoriteId = async ({ productId }: { productId: string }) => {
-  "use server";
-  const { user } = useUser();
-  if (!user) {
+export const fetchFavoriteId = async ({ productId }: { productId: string }) => {
+  const { userId } = await auth();
+  if (!userId) {
     throw new Error("User is not logged in");
   }
   const favorite = await db.favorite.findFirst({
     where: {
       productId,
-      clerkId: user.id,
+      clerkId: userId,
     },
     select: {
       id: true,
@@ -159,7 +156,6 @@ export const toggleFavoriteAction = async (prevState: {
   favoriteId: string | null;
   pathname: string;
 }) => {
-  "use server";
   const user = await getAuthUser();
   const { productId, favoriteId, pathname } = prevState;
   try {
@@ -182,10 +178,23 @@ export const toggleFavoriteAction = async (prevState: {
   } catch (error) {
     return renderError(error);
   }
-}; */
+};
+
+export const fetchUserFavorites = async () => {
+  const user = await getAuthUser();
+  const favorites = await db.favorite.findMany({
+    where: {
+      clerkId: user.id,
+    },
+    include: {
+      product: true,
+    },
+  });
+  return favorites;
+};
 
 // POST na nový produkt
-const renderError = (error: unknown): { message: string } => {
+const renderError = async (error: unknown): Promise<{ message: string }> => {
   console.log(error);
   return {
     message: error instanceof Error ? error.message : "An error occurred",
@@ -205,7 +214,6 @@ export const createProductAction = async (
   prevState: any,
   formData: FormData
 ): Promise<{ message: string }> => {
-  "use server";
   const user = await getAuthUser();
   try {
     /* const name = formData.get("name") as string;
