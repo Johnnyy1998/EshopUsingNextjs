@@ -133,7 +133,7 @@ export const updateProductImageAction = async (
     return renderError(error);
   }
 };
-
+// Vrátí id daného oblibéneho produktu uživatele na základě productid a userid
 export const fetchFavoriteId = async ({ productId }: { productId: string }) => {
   const { userId } = await auth();
   if (!userId) {
