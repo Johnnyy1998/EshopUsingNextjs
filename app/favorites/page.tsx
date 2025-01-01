@@ -1,11 +1,15 @@
 import { fetchUserFavorites } from "@/utils/actions";
 import SectionTitle from "@/components/global/SectionTitle";
 import ProductsGrid from "@/components/products/ProductsGrid";
+import EmptyList from "@/components/global/EmptyList";
 
-async function FavoritesPage() {
+export default async function FavoritesPage() {
   const favorites = await fetchUserFavorites();
-  if (favorites.length === 0)
-    return <SectionTitle text="You have no favorites yet." />;
+
+  if (!favorites || favorites.length === 0) {
+    return <EmptyList />;
+  }
+
   return (
     <div>
       <SectionTitle text="Favorites" />
@@ -13,4 +17,3 @@ async function FavoritesPage() {
     </div>
   );
 }
-export default FavoritesPage;
