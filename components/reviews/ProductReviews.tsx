@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Card } from "../ui/card";
 import RemoveReview from "./RemoveReview";
 import { currentUser } from "@clerk/nextjs/server";
+import Image from "next/image";
 
 async function ProductReviews({ id }: { id?: string }) {
   let reviews = [];
@@ -29,12 +30,14 @@ async function ProductReviews({ id }: { id?: string }) {
           clerkId,
         } = review;
         return (
-          <Card className="p-8 relative">
-            <Link href={`/products/${productId}`} key={id}>
+          <Card className="p-8 relative" key={id}>
+            <Link href={`/products/${productId}`}>
               <div className="flex items-center gap-4">
-                <img
+                <Image
                   src={authorImageUrl}
                   alt={`${authorName}'s profile`}
+                  width={40} // Nastavte šířku
+                  height={40} // Nastavte výšku
                   className="w-10 h-10 rounded-full object-cover border border-gray-300"
                 />
                 <div>

@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "kzosnocadtyxpiguzyah.supabase.co",
       },
+      {
+        protocol: "https",
+        hostname: "img.clerk.com", // Přidáno pro podporu obrázků z Clerk
+      },
     ],
   },
 };
