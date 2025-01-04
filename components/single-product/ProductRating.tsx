@@ -1,7 +1,5 @@
 import { fetchProductReviews } from "@/utils/actions";
 import { FaStar } from "react-icons/fa";
-import { Button } from "../ui/button";
-import { Link } from "lucide-react";
 
 async function ProductRating({ productId }: { productId: string }) {
   const id = productId;
