@@ -2,7 +2,12 @@
 import db from "@/utils/db";
 import { redirect } from "next/navigation";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { imageSchema, productSchema, validateWithZodSchema } from "./schemas";
+import {
+  imageSchema,
+  productSchema,
+  reviewSchema,
+  validateWithZodSchema,
+} from "./schemas";
 import { deleteImage, uploadImage } from "./supabase";
 
 export const fetchFeaturedProducts = async () => {
@@ -193,6 +198,68 @@ export const fetchUserFavorites = async () => {
   return favorites;
 };
 
+//REVIEWS daneho uživatele
+export const fetchUserReviews = async () => {
+  const user = await getAuthUser();
+  const reviews = await db.review.findMany({
+    where: {
+      clerkId: user.id,
+    },
+  });
+  return reviews;
+};
+// Reviews daneho produktu
+export const fetchProductReviews = async (productId: string) => {
+  const reviews = await db.review.findMany({
+    where: {
+      productId: productId,
+    },
+  });
+  return reviews;
+};
+
+export const deleteReviewAction = async (prevState: { id: string }) => {
+  const { id } = prevState;
+
+  try {
+    const review = await db.review.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    revalidatePath("/reviews");
+    return { message: "review removed" };
+  } catch (error) {
+    return renderError(error);
+  }
+};
+
+// Post review
+export const createReviewAction = async (
+  prevState: any,
+  formData: FormData
+): Promise<{ message: string }> => {
+  const user = await getAuthUser();
+  try {
+    // Na vstupu vezmu data a validuji je pomoc Z library -- https://zod.dev/?id=basic-usage
+    const rawData = Object.fromEntries(formData);
+    const validatedFields = validateWithZodSchema(reviewSchema, rawData);
+
+    await db.review.create({
+      data: {
+        ...validatedFields,
+        clerkId: user.id,
+      },
+    });
+
+    revalidatePath(`/products/${validatedFields.productId}`);
+    return { message: "Review submitted successfully" };
+  } catch (error) {
+    return renderError(error);
+  }
+};
+
 // POST na nový produkt
 const renderError = async (error: unknown): Promise<{ message: string }> => {
   console.log(error);
@@ -239,7 +306,7 @@ export const createProductAction = async (
     const file = formData.get("image") as File;
     const validatedFields = validateWithZodSchema(productSchema, rawData);
     const validatedFile = validateWithZodSchema(imageSchema, { image: file });
-    console.log(validatedFile);
+    //console.log(validatedFile);
 
     const fullpath = await uploadImage(validatedFile.image);
 

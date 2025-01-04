@@ -1,7 +1,7 @@
-import React from "react";
+import ProductReviews from "@/components/reviews/ProductReviews";
 
 function ReviewsPage() {
-  return <div>ReviewsPage</div>;
+  return <ProductReviews />;
 }
 
 export default ReviewsPage;

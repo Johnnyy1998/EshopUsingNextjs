@@ -1,11 +1,15 @@
 import BreadCrumbs from "@/components/single-product/BreadCrumbs";
-import { fetchSingleProduct } from "@/utils/actions";
+import { fetchProductReviews, fetchSingleProduct } from "@/utils/actions";
 import Image from "next/image";
 import { formatCurrency } from "@/utils/format";
 import FavoriteToggleButton from "@/components/products/FavoriteToggleButton";
 import AddToCart from "@/components/single-product/AddToCart";
 import ProductRating from "@/components/single-product/ProductRating";
 import ShareButton from "@/components/single-product/ShareButton";
+import SectionTitle from "@/components/global/SectionTitle";
+import ProductReviews from "@/components/reviews/ProductReviews";
+import SubmitReview from "@/components/reviews/SubmitReview";
+import { SignedIn } from "@clerk/nextjs";
 async function SingleProductPage({
   params,
 }: {
@@ -16,6 +20,7 @@ async function SingleProductPage({
   const product = await fetchSingleProduct(id);
   const { name, image, company, description, price } = product;
   const dollarsAmount = formatCurrency(price);
+
   return (
     <section>
       <BreadCrumbs name={product.name} />
@@ -40,7 +45,9 @@ async function SingleProductPage({
               <ShareButton name={name} productId={id} />
             </div>
           </div>
+
           <ProductRating productId={id} />
+
           <h4 className="text-xl mt-2">{company}</h4>
           <p className="mt-3 text-md bg-muted inline-block p-2 rounded-md">
             {dollarsAmount}
@@ -48,6 +55,13 @@ async function SingleProductPage({
           <p className="mt-6 leading-8 text-muted-foreground">{description}</p>
           <AddToCart productId={id} />
         </div>
+      </div>
+      <div className="mt-10">
+        <SectionTitle text="Reviews" />
+        <ProductReviews id={id} />
+        <SignedIn>
+          <SubmitReview productId={id} />
+        </SignedIn>
       </div>
     </section>
   );
