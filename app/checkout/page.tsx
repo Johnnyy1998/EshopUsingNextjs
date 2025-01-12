@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
-import React, { useCallback } from "react";
+import React, { useCallback, Suspense } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import {
   EmbeddedCheckoutProvider,
@@ -12,20 +12,24 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
 );
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const searchParams = useSearchParams();
 
   const orderId = searchParams.get("orderId");
   const cartId = searchParams.get("cartId");
 
   const fetchClientSecret = useCallback(async () => {
+    if (!orderId || !cartId) {
+      throw new Error("Missing orderId or cartId");
+    }
+
     // Create a Checkout Session
     const response = await axios.post("/api/payment", {
       orderId: orderId,
       cartId: cartId,
     });
     return response.data.clientSecret;
-  }, []);
+  }, [orderId, cartId]); // Přidání závislostí
 
   const options = { fetchClientSecret };
 
@@ -35,5 +39,13 @@ export default function CheckoutPage() {
         <EmbeddedCheckout />
       </EmbeddedCheckoutProvider>
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div>Načítání...</div>}>
+      <CheckoutContent />
+    </Suspense>
   );
 }
