@@ -1,5 +1,5 @@
 import BreadCrumbs from "@/components/single-product/BreadCrumbs";
-import { fetchProductReviews, fetchSingleProduct } from "@/utils/actions";
+import { fetchSingleProduct } from "@/utils/actions";
 import Image from "next/image";
 import { formatCurrency } from "@/utils/format";
 import FavoriteToggleButton from "@/components/products/FavoriteToggleButton";
@@ -10,7 +10,6 @@ import SectionTitle from "@/components/global/SectionTitle";
 import ProductReviews from "@/components/reviews/ProductReviews";
 import SubmitReview from "@/components/reviews/SubmitReview";
 import { SignedIn } from "@clerk/nextjs";
-import { currentUser } from "@clerk/nextjs/server";
 import ExistingReviewOfUser from "@/components/reviews/ExistingReviewOfUser";
 async function SingleProductPage({
   params,

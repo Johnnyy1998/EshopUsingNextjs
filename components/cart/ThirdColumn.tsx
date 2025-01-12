@@ -30,7 +30,7 @@ function ThirdColumn({ quantity, id }: { quantity: number; id: string }) {
         amount={amount}
         setAmount={handleAmountChange}
         mode={Mode.CartItem}
-        isLoading={false}
+        isLoading={isLoading}
       />
       <FormContainer action={removeCartItemAction}>
         <input type="hidden" name="id" value={id} />
