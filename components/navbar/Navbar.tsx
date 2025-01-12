@@ -1,10 +1,10 @@
 import Container from "../global/Container";
 import CartButton from "./CartButton";
 import DarkMode from "./DarkMode";
-import LinksDropdown from "./LinksDropdown";
 import Logo from "./Logo";
 import NavSearch from "./NavSearch";
 import { Suspense } from "react";
+import ServerLinksDropdown from "./ServerLinksDropdown";
 function Navbar() {
   return (
     <nav className="border-b">
@@ -16,7 +16,7 @@ function Navbar() {
         <div className="flex gap-4 items-center">
           <CartButton />
           <DarkMode />
-          <LinksDropdown />
+          <ServerLinksDropdown />
         </div>
       </Container>
     </nav>

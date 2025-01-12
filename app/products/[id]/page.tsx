@@ -1,5 +1,5 @@
 import BreadCrumbs from "@/components/single-product/BreadCrumbs";
-import { fetchSingleProduct } from "@/utils/actions";
+import { fetchProductReviews, fetchSingleProduct } from "@/utils/actions";
 import Image from "next/image";
 import { formatCurrency } from "@/utils/format";
 import FavoriteToggleButton from "@/components/products/FavoriteToggleButton";
@@ -10,6 +10,8 @@ import SectionTitle from "@/components/global/SectionTitle";
 import ProductReviews from "@/components/reviews/ProductReviews";
 import SubmitReview from "@/components/reviews/SubmitReview";
 import { SignedIn } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
+import ExistingReviewOfUser from "@/components/reviews/ExistingReviewOfUser";
 async function SingleProductPage({
   params,
 }: {
@@ -20,6 +22,7 @@ async function SingleProductPage({
   const product = await fetchSingleProduct(id);
   const { name, image, company, description, price } = product;
   const dollarsAmount = formatCurrency(price);
+  const hasExistingReview = await ExistingReviewOfUser(id);
 
   return (
     <section>
@@ -60,7 +63,7 @@ async function SingleProductPage({
         <SectionTitle text="Reviews" />
         <ProductReviews id={id} />
         <SignedIn>
-          <SubmitReview productId={id} />
+          {!hasExistingReview && <SubmitReview productId={id} />}
         </SignedIn>
       </div>
     </section>

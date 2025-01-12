@@ -12,12 +12,8 @@ import { links } from "@/utils/links";
 import UserIcon from "./UserIcon";
 import SignOutLink from "./SignOutLink";
 import { SignInButton, SignUpButton, SignedIn, SignedOut } from "@clerk/nextjs";
-import { auth } from "@clerk/nextjs/server";
 
-async function LinksDropdown() {
-  const authObject = await auth();
-  const isAdminUser = authObject.userId === process.env.ADMIN_USER_ID;
-
+async function LinksDropdown({ isAdminUser }: { isAdminUser: boolean }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

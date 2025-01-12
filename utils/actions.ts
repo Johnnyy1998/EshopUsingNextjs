@@ -209,10 +209,14 @@ export const fetchUserReviews = async () => {
   return reviews;
 };
 // Reviews daneho produktu
-export const fetchProductReviews = async (productId: string) => {
+export const fetchProductReviews = async (
+  productId: string,
+  { clerkId }: { clerkId?: string } = {}
+) => {
   const reviews = await db.review.findMany({
     where: {
       productId: productId,
+      ...(clerkId && { clerkId }), // Přidání podmínky pouze, pokud clerkId není prázdné
     },
   });
   return reviews;
@@ -261,14 +265,16 @@ export const createReviewAction = async (
 };
 
 // POST na nový produkt
-const renderError = async (error: unknown): Promise<{ message: string }> => {
+export const renderError = async (
+  error: unknown
+): Promise<{ message: string }> => {
   console.log(error);
   return {
     message: error instanceof Error ? error.message : "An error occurred",
   };
 };
 
-const getAuthUser = async () => {
+export const getAuthUser = async () => {
   const user = await currentUser();
   if (!user) {
     throw new Error("You must be logged in to access this route");
